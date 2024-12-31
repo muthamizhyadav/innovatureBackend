@@ -1,9 +1,9 @@
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class SignUpDto {
     @IsString()
     @IsNotEmpty()
-    @IsEmail({}, {message:"Please Enter Valid Email"})
+    @IsEmail({}, { message: "Please Enter Valid Email" })
     readonly email: string;
     @IsString()
     @IsNotEmpty()
@@ -14,4 +14,14 @@ export class SignUpDto {
     @IsString()
     @IsNotEmpty()
     readonly name: string;
+    @IsString()
+    imageUrl: string;
+    @IsString()
+    currency: string;
+    @IsArray()
+    category: []
+    @IsString()
+    confirmPassword: string;
+    @IsBoolean()
+    oauth: boolean
 }
