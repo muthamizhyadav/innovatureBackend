@@ -27,6 +27,8 @@ export class User {
     currency: string
     @Prop({ default: [] })
     category: []
+    @Prop({ default: false })
+    oauth: boolean
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

@@ -37,13 +37,23 @@ export class AuthService {
         }
     }
 
-    // async login(loginDto:AuthPaload):Promise <{token: string}>{
-    //     const {email, password} = loginDto
-    //     let findByEmail = await this.userModel.findOne({email:email})
-    //     if(!findByEmail){
-
-    //     }
-    //     const isMatch = await bcrypt.compare(password, hash);
-    // }
+    async login(loginDto: AuthPaload): Promise<{ token: string, data: any }> {
+        const { email, password, oauth } = loginDto
+        let findByEmail = await this.userModel.findOne({ email: email })
+        if (!findByEmail) {
+            throw new ApiError(HttpStatus.BAD_REQUEST, "Email not found")
+        }
+        if (!oauth) {
+            const isMatch = await bcrypt.compare(password, findByEmail.password);
+            if (!isMatch) {
+                throw new ApiError(HttpStatus.UNAUTHORIZED, "Invalid password");
+            }
+        }
+        const token = this.jwtService.sign({ _id: findByEmail._id });
+        return {
+            data: findByEmail,
+            token
+        }
+    }
 
 }
