@@ -31,7 +31,7 @@ export class ExpenseTrackerService {
 
   async getBudgetByUser(req: any) {
     const fetchdatas = await this.budgetModel.find({ userId: req._id })
-    return { data: fetchdatas }
+    return fetchdatas
   }
 
   findAll() {
