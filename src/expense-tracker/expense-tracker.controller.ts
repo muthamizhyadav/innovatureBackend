@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { ExpenseTrackerService } from './expense-tracker.service';
-import { CreateExpenseTrackerDto } from './dto/create-expense-tracker.dto';
+import { CreateExpenseTrackerDto, CreateGoalDto } from './dto/create-expense-tracker.dto';
 import { UpdateExpenseTrackerDto } from './dto/update-expense-tracker.dto';
 
 @Controller('expense-tracker')
@@ -15,6 +15,16 @@ export class ExpenseTrackerController {
   @Get('get')
   getBudgetsByUser(@Request() req) {
     return this.expenseTrackerService.getBudgetByUser(req.user)
+  }
+
+  @Post("goal")
+  createGoal(@Body() createGoalDto: CreateGoalDto, @Request() req) {
+    return this.expenseTrackerService.createGoal(createGoalDto, req.user);
+  }
+
+  @Get('goal')
+  getGoalByUser(@Request() req) {
+    return this.expenseTrackerService.getGoalByUser(req.user)
   }
 
   @Get()

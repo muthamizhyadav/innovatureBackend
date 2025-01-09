@@ -1,10 +1,10 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { CreateExpenseTrackerDto } from './dto/create-expense-tracker.dto';
+import { CreateExpenseTrackerDto, CreateGoalDto } from './dto/create-expense-tracker.dto';
 import { UpdateExpenseTrackerDto } from './dto/update-expense-tracker.dto';
 import { AuthToken } from 'src/middlewares/auth-token';
 import { AuthMiddleware } from 'src/middlewares/auth.middleware';
 import { Model } from 'mongoose';
-import { Budget } from './schemas/expense-tracker-schema';
+import { Budget, Goal } from './schemas/expense-tracker-schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/auth/schemas/user.schema';
 import { AuthModule } from 'src/auth/auth.module';
@@ -15,6 +15,7 @@ import { ApiError } from 'src/errors/api-error';
 export class ExpenseTrackerService {
   constructor(
     @InjectModel(Budget.name) private budgetModel: Model<Budget>,
+    @InjectModel(Goal.name) private goalModel: Model<Goal>,
     private userService: AuthService
   ) {
   }
@@ -31,6 +32,22 @@ export class ExpenseTrackerService {
 
   async getBudgetByUser(req: any) {
     const fetchdatas = await this.budgetModel.find({ userId: req._id })
+    return fetchdatas
+  }
+
+  async createGoal(createGoalDto: CreateGoalDto, req: any) {
+
+    const findUserById = (await this.userService.findUserById(req._id)).data
+    if (!findUserById.active) {
+      throw new ApiError(HttpStatus.BAD_REQUEST, "User disabled")
+    }
+    const data = { ...createGoalDto, ...{ userId: req._id } }
+    const creation = await this.goalModel.create(data)
+    return creation
+  }
+
+  async getGoalByUser(req: any) {
+    const fetchdatas = await this.goalModel.find({ userId: req._id })
     return fetchdatas
   }
 
