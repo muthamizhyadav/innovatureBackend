@@ -24,7 +24,7 @@ export class ExpenseTrackerService {
     if (!findUserById.active) {
       throw new ApiError(HttpStatus.BAD_REQUEST, "User disabled")
     }
-    const data = { ...createExpenseTrackerDto, ...{ userId: req.userId } }
+    const data = { ...createExpenseTrackerDto, ...{ userId: req._id } }
     const creation = await this.budgetModel.create(data)
     return creation
   }
