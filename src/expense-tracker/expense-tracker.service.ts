@@ -19,8 +19,8 @@ export class ExpenseTrackerService {
   ) {
   }
 
-  async create(createExpenseTrackerDto: CreateExpenseTrackerDto, req: any) {
-    const findUserById = (await this.userService.findUserById(req.userId)).data
+  async create(createExpenseTrackerDto: CreateExpenseTrackerDto, req: any) {    
+    const findUserById = (await this.userService.findUserById(req._id)).data
     if (!findUserById.active) {
       throw new ApiError(HttpStatus.BAD_REQUEST, "User disabled")
     }
