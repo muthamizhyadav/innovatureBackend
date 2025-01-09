@@ -19,7 +19,7 @@ export class ExpenseTrackerService {
   ) {
   }
 
-  async create(createExpenseTrackerDto: CreateExpenseTrackerDto, req: any) {    
+  async create(createExpenseTrackerDto: CreateExpenseTrackerDto, req: any) {
     const findUserById = (await this.userService.findUserById(req._id)).data
     if (!findUserById.active) {
       throw new ApiError(HttpStatus.BAD_REQUEST, "User disabled")
@@ -27,6 +27,11 @@ export class ExpenseTrackerService {
     const data = { ...createExpenseTrackerDto, ...{ userId: req.userId } }
     const creation = await this.budgetModel.create(data)
     return creation
+  }
+
+  async getBudgetByUser(req: any) {
+    const fetchdatas = await this.budgetModel.find({ userId: req._id })
+    return { data: fetchdatas }
   }
 
   findAll() {

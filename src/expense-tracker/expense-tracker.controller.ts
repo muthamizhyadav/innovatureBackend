@@ -8,8 +8,13 @@ export class ExpenseTrackerController {
   constructor(private readonly expenseTrackerService: ExpenseTrackerService) { }
 
   @Post()
-  create(@Body() createExpenseTrackerDto: CreateExpenseTrackerDto, @Request() req) {    
+  create(@Body() createExpenseTrackerDto: CreateExpenseTrackerDto, @Request() req) {
     return this.expenseTrackerService.create(createExpenseTrackerDto, req.user);
+  }
+
+  @Get('get')
+  getBudgetsByUser(@Request() req) {
+    return this.expenseTrackerService.getBudgetByUser(req.user)
   }
 
   @Get()
