@@ -12,7 +12,7 @@ export class AuthController {
    }
 
    @Post('/signin')
-   signin(@Body() signupdto: AuthPaload): Promise<{ token: any, data: any }> {
+   signin(@Body() signupdto: AuthPaload): Promise<{ token: any, data: any }> {      
       return this.authService.login(signupdto)
    }
 }

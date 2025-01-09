@@ -7,12 +7,13 @@ import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './auth.dto/signup.dto';
 import * as bcrypt from 'bcrypt';
 import { ApiError } from 'src/errors/api-error';
+import { AuthToken } from 'src/middlewares/auth-token';
 @Injectable()
 export class AuthService {
     constructor(
         @InjectModel(User.name)
         private userModel: Model<User>,
-        private jwtService: JwtService
+        private authService: AuthToken
     ) { }
 
     async signUp(SignUpDto: SignUpDto): Promise<{ user: any }> {
@@ -43,17 +44,25 @@ export class AuthService {
         if (!findByEmail) {
             throw new ApiError(HttpStatus.BAD_REQUEST, "Email not found")
         }
-        if (!oauth) {
+        if (!oauth && !findByEmail.oauth) {
             const isMatch = await bcrypt.compare(password, findByEmail.password);
             if (!isMatch) {
                 throw new ApiError(HttpStatus.UNAUTHORIZED, "Invalid password");
             }
         }
-        const token = this.jwtService.sign({ _id: findByEmail._id });
+        const token = this.authService.generateToken({ userId: findByEmail._id })
         return {
             data: findByEmail,
             token
         }
+    }
+
+    async findUserById(id: any): Promise<{ data: any }> {
+        const findByEmail = await this.userModel.findById(id)
+        if (!findByEmail) {
+            throw new ApiError(HttpStatus.NOT_FOUND, "User not found")
+        }
+        return { data: findByEmail }
     }
 
 }
